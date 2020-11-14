@@ -19,13 +19,17 @@ export const combineRequestParams = (): { [key: string]: any } => {
 
 const composeUrl = (general: string): string => format('https://%s.planfix.ru/task/%s', config.get('planfix.account'), general);
 
+const replaceTrailingSpaces = (str: string): string => str
+  .replace(/\s{2}/g, ' ')
+  .replace(/\s-\s/g, '-');
+
 export const mapTaskResponce = (responce: PlanfixTasksResponce): IdeaTask[] => {
   const tasks = ([] as PlanfixTask[]).concat(responce.tasks.task);
   return tasks.map((task) => ({
     id: task.id,
     general: task.general,
     description: task.description,
-    summary: task.title,
+    summary: replaceTrailingSpaces(task.title),
     issueUrl: composeUrl(task.general),
   }));
 };
